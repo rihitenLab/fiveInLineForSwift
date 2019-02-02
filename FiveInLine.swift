@@ -1,11 +1,13 @@
 import Foundation
 
+// FiveInLine stones
 enum Stones: Int {
     case black = 0
     case white = 1
 }
 
-enum Turn: Int {
+// FiveInLine order
+enum Order: Int {
     case first = 0
     case after = 1
 
@@ -37,6 +39,7 @@ enum Turn: Int {
     }
 }
 
+// FiveInLine borad
 class Board {
 
     private var size: Int = 5
@@ -80,45 +83,47 @@ class Board {
 
 }
 
+// FiveInLine system
 class FiveInLine {
 
-    var turn: Turn!
+    var order: Order!
     var board: Board
 
-    init (turn: Turn, boardStr: String? = nil) {
-        self.turn = turn
+    init (order: Order, boardStr: String? = nil) {
+        self.order = order
         self.board = Board(board: boardStr)
+        self.dispStatus()
     }
 
-    func disp () {
-        print("turn: \(self.turn.description)")
+    private func dispStatus () {
+        print("order: \(self.order.description)")
         print("black: \(self.board.getStonesNum(stones: Stones.black))")
         print("white: \(self.board.getStonesNum(stones: Stones.white))")
+        print("board:")
         self.board.disp(){
             (board) in 
             for boardRow in board {
-                print(boardRow)
+                print(boardRow.map{ $0?.rawValue ?? -1})
             }
         }
     }
 }
 
+// FiveInLine command
 func main() -> Int {
 
     let argv = ProcessInfo.processInfo.arguments
 
     if argv.count != 4 { 
-        print("argument err \(argv.count): FiveInLine [boardSize] [turn] [boradFile]")
+        print("argument err \(argv.count): FiveInLine [boardSize] [order] [boradFile]")
         return -1
     }
 
-    let importURL:URL = URL(fileURLWithPath: argv[3])
+    let importURL: URL = URL(fileURLWithPath: argv[3])
 
     do {
         let _ = try String(contentsOf: importURL, encoding: String.Encoding.utf8)
-        let fiveInLine = FiveInLine(turn: .first)
-
-        fiveInLine.disp()
+        let _ = FiveInLine(order: .first)
     } catch {
         print("file import err¥n\(error)")
         return -1
