@@ -40,22 +40,44 @@ enum Turn: Int {
 class Board {
 
     private var size: Int = 5
-    private var board = [[Stones?]]()
+    
+    private var stonesNum = [Stones:Int]()
+    
+    private var board: [[Stones?]] {    
+        didSet {
+            self.stonesNum = [:]
+
+            board.flatMap{$0}.forEach { self.addStonesNum(stones: $0!) }
+        }
+    }
 
     init (board: String? = nil) {
 
+        var tmp = [[Stones?]]()
+
         guard let _ = board else {
             for _ in 1...size {
-                self.board.append([Stones?](repeating: nil, count: size))
+                tmp.append([Stones?](repeating: nil, count: size))
             }
+            self.board = tmp
             return
         }
+
+        self.board = tmp
     }
 
     internal func disp () {
         for boardRow in board {
             print(boardRow)
         }
+    }
+
+    func getStonesNum (stones: Stones) -> Int{
+        return self.stonesNum[stones, default: 0]
+    }
+
+    func addStonesNum (stones: Stones) {
+        self.stonesNum[stones, default: 0] += 1
     }
 
 }
@@ -70,9 +92,11 @@ class FiveInLine {
         self.board = Board(board: boardStr)
     }
 
-    internal func disp () {
+    func disp () {
         print("turn: \(self.turn.description)")
         self.board.disp()
+        print("black: \(self.board.getStonesNum(stones: Stones.black))")
+        print("white: \(self.board.getStonesNum(stones: Stones.white))")
     }
 }
 
@@ -86,9 +110,11 @@ func main() -> Int {
     }
 
     let importURL:URL = URL(fileURLWithPath: argv[3])
+
     do {
-        let _ = try String( contentsOf: importURL, encoding: String.Encoding.utf8)
+        let _ = try String(contentsOf: importURL, encoding: String.Encoding.utf8)
         let fiveInLine = FiveInLine(turn: .first)
+
         fiveInLine.disp()
     } catch {
         print("file import err¥n\(error)")
