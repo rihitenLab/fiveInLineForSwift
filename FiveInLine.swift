@@ -66,18 +66,16 @@ class Board {
         self.board = tmp
     }
 
-    internal func disp () {
-        for boardRow in board {
-            print(boardRow)
-        }
-    }
-
     func getStonesNum (stones: Stones) -> Int{
         return self.stonesNum[stones, default: 0]
     }
 
     func addStonesNum (stones: Stones) {
         self.stonesNum[stones, default: 0] += 1
+    }
+
+    func disp (display: (([[Stones?]]) -> Void)?) {
+        display?(board)
     }
 
 }
@@ -94,9 +92,14 @@ class FiveInLine {
 
     func disp () {
         print("turn: \(self.turn.description)")
-        self.board.disp()
         print("black: \(self.board.getStonesNum(stones: Stones.black))")
         print("white: \(self.board.getStonesNum(stones: Stones.white))")
+        self.board.disp(){
+            (board) in 
+            for boardRow in board {
+                print(boardRow)
+            }
+        }
     }
 }
 
