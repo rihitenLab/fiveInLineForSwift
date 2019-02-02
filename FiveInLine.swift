@@ -9,6 +9,15 @@ enum Turn: Int {
     case first = 0
     case after = 1
 
+    var stones : Stones {
+        switch self {
+        case .first :
+            return Stones.black
+        case .after:
+            return Stones.white
+        }
+    }
+
     var description: String {
         switch self {
         case .first:
@@ -17,9 +26,19 @@ enum Turn: Int {
             return "after"
         }
     }
+
+    mutating func next () {
+        switch self {
+        case .first:
+            self = .after
+        case .after:
+            self = .first
+        }
+    }
 }
 
 class Board {
+
     private var size: Int = 5
     private var board = [[Stones?]]()
 
